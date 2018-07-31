@@ -1,0 +1,17 @@
+---
+Read:
+    user: admin
+    password: example
+    host: 127.0.0.1
+    port: 27017
+    db: dummy
+    collection: random_password
+    
+Write:
+    user: admin
+    password: example
+    host: 127.0.0.1
+    port: 27017
+    db: dummy
+    collection: test_result
+...
