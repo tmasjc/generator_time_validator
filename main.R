@@ -1,5 +1,7 @@
 library(tidyverse)
+library(yaml)
 library(mongolite)
+library(cli)
 
 # Helper Function ---------------------------------------------------------
 
@@ -64,12 +66,12 @@ if(all(dat$status)) {
   ) %>% wrt$insert()
   
   
-  cli::cat_boxx("All test passed.", col = "green")
+  cat_boxx("All test passed.", col = "green")
   
 }else {
   
   # report 
-  cli::cat_boxx("Not all results return true. Please check.", col = "red")
+  cat_boxx("Not all results return true. Please check.", col = "red")
   stop("Require further attention.")
   
 }
