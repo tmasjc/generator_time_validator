@@ -2,7 +2,7 @@
 Read:
     user: admin
     password: example
-    host: 127.0.0.1
+    host: some-mongo
     port: 27017
     db: dummy
     collection: random_password
@@ -10,7 +10,7 @@ Read:
 Write:
     user: admin
     password: example
-    host: 127.0.0.1
+    host: some-mongo
     port: 27017
     db: dummy
     collection: test_result
