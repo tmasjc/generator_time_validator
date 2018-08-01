@@ -10,7 +10,8 @@ RUN apt-get update -y \
 		-r "https://mirrors.tuna.tsinghua.edu.cn/CRAN/"	\
 		yaml \
 		mongolite \
-		cli
+		cli \
+		plumber
 
 COPY . /validator
 

@@ -2,6 +2,7 @@ library(tidyverse)
 library(yaml)
 library(mongolite)
 library(cli)
+library(plumber)
 
 # Helper Function ---------------------------------------------------------
 
@@ -44,19 +45,12 @@ est_mongo_conn <- function(conn) {
 
 # Main --------------------------------------------------------------------
 
+do_validate <- function(df) {
 
-# establish a db connection
-rd <- est_mongo_conn("Read")
-wrt <- est_mongo_conn("Write")
-
-# extract all
-dat <- rd$find()
-
-# test: if all status = true
-if(all(dat$status)) {
+  wrt <- est_mongo_conn("Write")
   
   # extract coefficients
-  coefs <- lm(ts ~ x, data = dat)$coefficients %>% round(digits = 5)
+  coefs <- lm(ts ~ x, data = df)$coefficients %>% round(digits = 5)
   
   # save result to db
   list(
@@ -66,15 +60,52 @@ if(all(dat$status)) {
   ) %>% wrt$insert()
   
   
-  cat_boxx("All test passed.", col = "green")
-  
-}else {
-  
-  # report 
-  cat_boxx("Not all results return true. Please check.", col = "red")
-  stop("Require further attention.")
+  cat_boxx("*** ALL TEST PASSED ***", col = "green")
   
 }
+
+make_plot <- function(df) {
+  
+  df %>% 
+    bind_rows() %>% 
+    mutate(ts = as.numeric(ts)) %>% 
+    ggplot(aes(x, ts)) +
+    geom_line(col = "salmon") + 
+    labs(x = "N", y = "Time Spent")
+  
+}
+
+# GET -----------------------------------------------------------------
+
+#' @png (width = 600, height = 400)
+#* @get /trigger
+function(req) {
+  
+  cat_rule("Receive trigger. Prepare to validate.")
+  
+  # establish a db connection
+  rd <- est_mongo_conn("Read")
+  
+  # extract all data
+  dat <- rd$find()
+  
+  # test: if all status = true
+  if(all(dat$status)) {
+    
+    do_validate(dat)
+    make_plot(dat) %>% print()
+    
+  }else {
+    
+    # report 
+    cat_boxx("Not all results return true. Please check.", col = "red")
+    stop("Require further attention.")
+    
+  }
+  
+}
+
+
 
 
 
