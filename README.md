@@ -1,2 +1,1 @@
-# generator_time_validator
-See &lt;some-repo>
+See https://github.com/tmasjc/Random_Pwd_Generator.git
