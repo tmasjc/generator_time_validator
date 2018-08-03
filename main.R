@@ -77,8 +77,8 @@ make_plot <- function(df) {
 
 # GET -----------------------------------------------------------------
 
-#' @png (width = 600, height = 400)
-#* @get /trigger
+
+#* @get /status
 function(req) {
   
   cat_rule("Receive trigger. Prepare to validate.")
@@ -93,6 +93,43 @@ function(req) {
   if(all(dat$status)) {
     
     do_validate(dat)
+    # return simple feedback
+    list(
+      status = 1,
+      remark = "All passed"
+    )
+    
+  }else {
+    
+    msg = "Not all results return true. Please check."
+    cat_boxx(msg)
+    
+    list(
+      status = 0,
+      remark = msg
+    )
+  }
+  
+}
+
+
+#' @png (width = 600, height = 400)
+#* @get /graph
+function(req) {
+  
+  cat_rule("Receive trigger. Ready to process result.")
+  
+  # establish a db connection
+  rd <- est_mongo_conn("Read")
+  
+  # extract all data
+  dat <- rd$find()
+  
+  # test: if all status = true
+  if(all(dat$status)) {
+    
+    do_validate(dat)
+    # return plot
     make_plot(dat) %>% print()
     
   }else {
@@ -104,9 +141,6 @@ function(req) {
   }
   
 }
-
-
-
 
 
 
