@@ -50,7 +50,7 @@ do_validate <- function(df) {
   wrt <- est_mongo_conn("Write")
   
   # extract coefficients
-  coefs <- lm(ts ~ x, data = df)$coefficients %>% round(digits = 5)
+  coefs <- lm(total_time ~ x, data = df)$coefficients %>% round(digits = 5)
   
   # save result to db
   list(
@@ -68,8 +68,8 @@ make_plot <- function(df) {
   
   df %>% 
     bind_rows() %>% 
-    mutate(ts = as.numeric(ts)) %>% 
-    ggplot(aes(x, ts)) +
+    mutate(total_time = as.numeric(total_time)) %>% 
+    ggplot(aes(x, total_time)) +
     geom_line(col = "salmon") + 
     labs(x = "N", y = "Time Spent")
   
